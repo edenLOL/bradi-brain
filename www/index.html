@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+  <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+  <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, target-densitydpi=medium-dpi, user-scalable=0" />
+
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+  <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
+  <title>BradiBrain</title>
+    <script type="text/javascript" src="cordova.js"></script>
+  <script type="text/javascript" src="js/index.js"></script>
+  <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+</head>
+
+<body>
+  <div class="app">
+    
+    <div id="prev"><span><i class="fa fa-arrow-left"></i></span></div>
+    <div id="restart" class="restart"><span><i class="fa fa-refresh"></i></span></div>
+      <h1 class="supertitle">Bradi Brain</h1>
+      <div class="background-container">
+        <div class="background-img turtle"></div>
+      </div>
+    <div id="home" class="question-container" name="1">
+      <h2>What are you panicking about?</h2>
+      <div class="btn-container">
+        <button class="btn" name="fooddrink">Food & Drink</button>
+        <button class="btn" name="entertainment">Entertainment</button>
+        <button class="btn" name="shopping">Shopping</button>
+        <button class="btn" name="social">Social</button>
+      </div>
+    </div>
+
+    <div id="fooddrink" class="question-container" name="2">
+      <h2>I am...</h2>
+      <div class="btn-container">
+        <button class="btn" name="hungry">Hungry</button>
+        <button class="btn" name="thirsty">Thirsty</button>
+      </div>
+    </div>
+
+
+    <div id="hungry" class="question-container" name="3">
+
+      <h2>How much effort?</h2>
+      <div class="btn-container">
+        <button class="btn" name="cook">Cook</button>
+        <button class="btn" name="snack">Snack</button>
+        <button class="btn" name="takeout">Take Out</button>
+        <button class="btn" name="dineout">Dine out</button>
+      </div>
+    </div>
+
+    <div id="cook" class="question-container" name="4">
+
+      <h2>Cook what?</h2>
+      <div class="btn-container">
+        <button class="btn" name="stirfry">Stirfry</button>
+        <button class="btn" name="roast">Roast</button>
+      </div>
+    </div>
+
+    <div id="snack" class="question-container" name="5">
+      <h2>You shall eat...</h2>
+      <div class="btn-container">
+        <button class="btnSpecial" id="snacktime">Give me a snack!</button>
+        <br />
+        <br />
+        <br />
+        <h2 id="snackResult"></h2>
+      </div>
+    </div>
+
+    <div id="takeout" class="question-container" name="6">
+      <h2>What are we getting tonight?</h2>
+      <div class="btn-container">
+        <button class="btn" name="pitapit">Pita Pit</button>
+        <button class="btn" name="mcdonalds">McDonald's</button>
+        <button class="btn" name="kfc">KFC</button>
+        <button class="btn" name="pizza">Pizza</button>
+      </div>
+    </div>
+
+    <div id="dineout" class="question-container" name="7">
+      <h2>Where to?!</h2>
+      <div class="btn-container">
+        <button class="btn" name="foodselect">Thai</button>
+        <button class="btn" name="foodselect">Chinese</button>
+        <button class="btn" name="foodselect">Lonestar</button>
+        <button class="btn" name="foodselect">Pub meal</button>
+      </div>
+    </div>
+
+    <div id="foodselect" class="question-container" name="7">
+      <h2>Enter your options, and I'll choose</h2>
+      <div class="btn-container">
+        <div id="menu-options">
+          <input name="fooditem" type='text'></input>
+          <button id="addfood">Add</button>
+          <button id="resetfood">Reset</button>
+        </div>
+        <br />
+        <br />
+        <button class="btnSpecial" id="foodDone">What's my order?</button>
+        <br />
+        <br />
+        <h2 id="foodResult"></h2>
+      </div>
+    </div>
+
+<script>
+  
+var foodOptions = new Array();
+          
+$("#addfood").click(function(e){
+    e.preventDefault();
+    var menuItem = $("#menu-options").find("input[name^='fooditem']").val();
+    foodOptions.push(menuItem);
+    $("#menu-options").find("input[name^='fooditem']").val('');
+});
+        
+$('#foodDone').click(function () {
+  foodOptions.sort( randOrd );
+    $('#foodResult').each(function(i, val) {
+      $(this).fadeOut("slow");
+      $(this).promise().done(function(){
+        $(this).html(''+ foodOptions[i] +'');
+        $(this).fadeIn("slow");
+      });  
+    });
+});
+
+$("#resetfood").click(function(e){
+    e.preventDefault();
+    foodOptions = []; 
+});
+</script>
+
+    <div id="thirsty" class="question-container" name="8">
+      <h2>Whatcha dranking?</h2>
+      <div class="btn-container">
+        <button class="btn" name="alcohol">Alcoholic</button>
+        <button class="btn" name="nonalc">Non-Alcoholic</button>
+        <button class="btn" name="hangover">Hangover</button>
+      </div>
+    </div>
+
+    <div id="alcohol" class="question-container" name="9">
+      <h2>Get drunk on what?</h2>
+      <div class="btn-container">
+        <button class="btn" name="cider">Cider</button>
+        <button class="btn" name="wine">Wine</button>
+        <button class="btn" name="smirnoff">Smirnoff Black</button>
+      </div>
+    </div>
+
+
+    <div id="cider" class="question-container" name="10">
+      <h2>Fancy, cheap, delicious?</h2>
+      <div class="btn-container">
+        <button class="btn" name="monteiths">Monteiths Apple Cider</button>
+        <button class="btn" name="rekorderlig">Rekorderlig</button>
+        <button class="btn" name="orchardthieves">Orchard Thieves</button>
+      </div>
+    </div>
+
+    <div id="wine" class="question-container" name="11">
+      <h2>Fancy, cheap, delicious?</h2>
+      <div class="btn-container">
+        <button class="btn" name="jordanscreek">Sparkling Jordan's Creek</button>
+        <button class="btn" name="sub10">Less than $10</button>
+        <button class="btn" name="above10">More than $10</button>
+        <button class="btn" name="nicewine">Pick the nicest one!</button>
+      </div>
+    </div>
+
+    <div id="nonalc" class="question-container" name="12">
+      <h2>How thirsty are you?</h2>
+      <div class="btn-container">
+        <button class="btn" name="juice">Orange Juice</button>
+        <button class="btn" name="coffee">Coffee</button>
+        <button class="btn" name="soda">Sprite / L&P</button>
+        <button class="btn" name="water">Water</button>
+        <button class="btn" name="smoothie">Smoothie</button>
+      </div>
+    </div>
+
+    <div id="hangover" class="question-container" name="13">
+      <h2>How hungover are you?</h2>
+      <div class="btn-container">
+        <button class="btn" name="juice">Orange Juice</button>
+        <button class="btn" name="coffee">Coffee</button>
+        <button class="btn" name="soda">Powerade</button>
+        <button class="btn" name="water">Water</button>
+      </div>
+    </div>
+
+    <div id="entertainment" class="question-container" name="14">
+      <h2>At home or out?</h2>
+      <div class="btn-container">
+        <button class="btn" name="athome">Home</button>
+        <button class="btn" name="goout">Out</button>
+      </div>
+    </div>
+
+    <div id="athome" class="question-container" name="15">
+      <h2>Let's do this!</h2>
+      <div class="btn-container">
+        <button class="btn" name="videogame">Video Games</button>
+        <button class="btn" name="boardgame">Board Games</button>
+        <button class="btnSpecial" id="moviesuggestionbtn" name="moviesuggestion">Movie</button>
+        <button class="btn" name="invite">Invite people over</button>
+      </div>
+    </div>
+    
+
+
+    <div id="moviesuggestion" class="question-container" name="15a">
+      <div id="movieframe" style="overflow: hidden; height: 150px" name="15b"> </div>
+      <div class="btn-container">
+        <button class="btnSpecial" id="tryagain">Try another</button>
+      </div> 
+    </div>
+    
+    <div id="goout" class="question-container" name="16">
+      <h2>Where to?!</h2>
+      <div class="btn-container">
+        <a href="http://hoyts.co.nz/" target="_blank"><button class="btn">See a movie</button></a>
+        <button class="btn" name="walking">Walk / Park</button>
+        <button class="btn" name="town">Drinks / Food</button>
+        <button class="btn" name="gym">Gym / Workout</button>
+      </div>
+    </div>
+
+    <div id="shopping" class="question-container" name="17">
+      <h2>What are ya buying?</h2>
+      <div class="btn-container">
+        <button class="btn" name="groceries">Groceries</button>
+        <button class="btn" name="clothing">Clothing</button>
+        <button class="btn" name="gifts">Gifts</button>
+      </div>
+    </div>
+
+    <div id="groceries" class="question-container" name="18">
+      <h2>Buy online or go to grocery store?</h2>
+      <div class="btn-container">
+        <a href="http://shop.countdown.co.nz/" target="_blank">
+          <button class="btn">Online</button>
+        </a>
+        <button class="btn" name="supermarket">Go to a SuperMarket</button>
+      </div>
+    </div>
+
+    <div id="clothing" class="question-container" name="19">
+      <h2>Do you need it?</h2>
+      <div class="btn-container">
+        <button class="btn" name="specialocc">Special occassion</button>
+        <button class="btn" name="nothingsimilar">I don't have anything similar</button>
+        <button class="btn" name="work">I need it for work</button>
+        <button class="btn" name="leaveit">None of these - leave it</button>
+      </div>
+    </div>
+
+    <div id="gifts" class="question-container" name="20">
+      <h2>Nah, you don't need help.</h2>
+      <h3>You're too good at gifting all ready.</h3>
+    </div>
+
+    <div id="social" class="question-container" name="21">
+      <h2>I feel like spinning a yarn</h2>
+      <h3>But to who?</h3>
+      <div class="btn-container">
+        <button class="btnSpecial" id="socialwho">I'll talk to...</button>
+        <br />
+        <br />
+        <h1 id="socialcontent"></h1>
+      </div>
+    </div>
+    
+    <div id="finalboss" class="question-container" name="22">
+      <h2>You made it!</h2>
+      <h3>The rest is up to you!</h3>
+      <div class="btn-container">
+        <button class="btnSpecial restart">Restart</button>
+      </div>
+    </div>    
+
+  </div>
+
+  <div class="footer"></div>
+
+  <script>
+    $('.question-container').hide();
+        $('#home').show();
+        
+        var displayDiv = null
+        
+        $('.btn').click(function () {
+    	   //btnResponse[this.class]();
+            
+            $('.question-container').slideUp();
+            displayDiv = '#' + $(this).attr('name');
+            if ($(displayDiv).length > 0) {
+              $(displayDiv).slideDown();
+            } 
+            else {
+              $('#finalboss').slideDown();
+            }
+           	btnHistory.push(displayDiv); 
+               //alert(btnHistory)
+        });
+		
+        var btnHistory = new Array();
+        btnHistory.push('#home')
+
+        $('#prev').click(function() {
+
+            $('.question-container').hide();
+            //alert(displayDiv + '  displayDiv') 
+            //alert(btnHistory + '  btnHistory')
+        	var prevPage = btnHistory.pop()
+            //alert(btnHistory + '  btnHistory sliced...')   
+            prevPage = btnHistory.slice(-1)[0]                                              
+            //alert(prevPage + '  PrevPage...')
+        	$(prevPage).slideDown();
+          $('#movieframe').remove();
+        });
+
+        $('.restart').click(function() {
+        	location.reload(true);
+        });   
+        
+        
+        $('#moviesuggestionbtn').click(function () {
+            $('.question-container').slideUp();
+            displayDiv = '#moviesuggestion';
+            $("#movieframe").load('http://www.suggestmemovie.com/ div.contentbox');
+
+            $(displayDiv).slideDown();
+           	btnHistory.push(displayDiv); 
+               //alert(btnHistory)
+        });    
+        
+        $('#tryagain').click(function () {
+                 
+          $("#movieframe").fadeOut("slow");
+          $("#movieframe").promise().done(function(){
+            $("#movieframe").load('http://www.suggestmemovie.com/ div.contentbox');
+            $("#movieframe").fadeIn("slow");
+          });
+        });                
+        
+$( "#destinationform" ).submit(function( event ) {
+    $('.question-container').slideUp();
+    $('#viewmap').slideDown();
+    event.preventDefault();
+}); 
+
+$( "#login" ).submit(function( event ) {
+    $('.question-container').slideUp();
+    $('#firstpage').slideDown();
+    event.preventDefault();
+});
+
+
+function randOrd() {
+    return (Math.round(Math.random())-0.5); 
+}
+
+$(document).ready(function() {
+    var themes = [ 'friends', 'turtle' ];
+    themes.sort( randOrd );
+    $('.background-img').each(function(i, val) {
+        $(this).addClass(themes[i]);
+        $('.btn').addClass(themes[i]);
+        $('.btnSpecial').addClass(themes[i]);
+        $('.footer').addClass(themes[i]);
+    });
+});
+
+$('#socialwho').click(function () {
+    var yarners = [ 'Mum & Dad', 'Nana & Grandad', 'Skype/Snap a friend', 'See who is having drinks', 'Organise drinks', 'Visit someone with Luna', 'Meet up for Coffee' ];
+    yarners.sort( randOrd );
+    $('#socialcontent').each(function(i, val) {
+      $(this).fadeOut("slow");
+      $(this).promise().done(function(){
+        $(this).html(''+ yarners[i] +'');
+        $(this).fadeIn("slow");
+      });    
+    });
+});
+
+$('#snacktime').click(function () {
+    var snacks = [ 'Apple', 'Chocolate', 'Yoghurt', 'Biscuit', 'Ice cream', 'Chips' ];
+    snacks.sort( randOrd );
+    $('#snackResult').each(function(i, val) {
+      $(this).fadeOut("slow");
+      $(this).promise().done(function(){
+        $(this).html(''+ snacks[i] +'');
+        $(this).fadeIn("slow");
+      });
+    });
+});
+
+  </script>
+
+</body>
+
+</html>
